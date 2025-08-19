@@ -1,0 +1,43 @@
+import java.io.*;
+import java.security.Key;
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import java.util.Base64;
+
+public class Blowfish {
+    public static void main(String[] args) throws Exception {
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("Blowfish");
+        keyGenerator.init(128);
+        Key secretKey = keyGenerator.generateKey();
+
+        Cipher cipherOut = Cipher.getInstance("Blowfish/CFB/NoPadding");
+        cipherOut.init(Cipher.ENCRYPT_MODE, secretKey);
+        Base64.Encoder encoder = Base64.getEncoder();
+
+        byte iv[] = cipherOut.getIV();
+        if (iv != null) {
+            System.out.println("Initialization Vector of the Cipher: " + encoder.encodeToString(iv));
+        }
+
+        FileInputStream fin = new FileInputStream("C:\\Users\\MLRIT\\Desktop\\3352\\inputFile.txt");
+        FileOutputStream fout = new FileOutputStream("C:\\Users\\MLRIT\\Desktop\\3352\\outputFile.txt");
+        CipherOutputStream cout = new CipherOutputStream(fout, cipherOut);
+
+        int input = 0;
+        while ((input = fin.read()) != -1) {
+            cout.write(input);
+        }
+        fin.close();
+        cout.close();
+    }
+}
+
+// output :
+Initialization Vector of the Cipher: zTpfPYt9QhE=
+inputfile.txt :
+Hello world
+i am student at mlrit
+
+outputfile : 
+g"8®Ñ‰Š­J:qaô¿Ô_¦Ú\F³äW/æ=KÜYv*€	
