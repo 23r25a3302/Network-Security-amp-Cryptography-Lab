@@ -1,0 +1,28 @@
+#include<stdio.h>
+#include<string.h>
+int main() {
+    char *str = "Hello world";
+    printf("original\tAND with 127\tOR with 127\tNOR with 127\t\n");
+    printf("--------------------------------------------------------\n");
+    
+    for(int i=0; str[i] != '\0'; i++) {
+        char ch = str[i];
+        printf("%c(%3d)\t\t%3d\t\t\t%3d\t\t\t%3d\t\t\t\n", ch,ch, (ch & 127), (ch | 127), (ch ^ 127));
+    }
+    return 0;
+}
+
+// output : 
+original	AND with 127	OR with 127	NOR with 127	
+--------------------------------------------------------
+H( 72)		 72			127			 55			
+e(101)		101			127			 26			
+l(108)		108			127			 19			
+l(108)		108			127			 19			
+o(111)		111			127			 16			
+ ( 32)		 32			127			 95			
+w(119)		119			127			  8			
+o(111)		111			127			 16			
+r(114)		114			127			 13			
+l(108)		108			127			 19			
+d(100)		100			127			 27			
