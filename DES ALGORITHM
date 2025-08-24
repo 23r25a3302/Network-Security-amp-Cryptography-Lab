@@ -75,3 +75,61 @@ String To Encrypt: studinginmlrit
 Encrypted Value : goiDBndtQQWxkpMXE885Tw==
 
 Decrypted Value : studinginmlrit
+
+// refined code
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Base64;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.DESedeKeySpec;
+import javax.crypto.SecretKeyFactory;
+import java.security.spec.KeySpec;
+
+public class DES_Simplified {
+
+    private static final String UNICODE_FORMAT = "UTF8";
+    private static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
+    private static final String ENCRYPTION_KEY = "ThisISSecretEncryptionKey"; // 24 characters = 192 bits
+    private static SecretKey secretKey;
+    private static Cipher cipher;
+
+    static {
+        try {
+            byte[] keyAsBytes = ENCRYPTION_KEY.getBytes(UNICODE_FORMAT);
+            KeySpec keySpec = new DESedeKeySpec(keyAsBytes);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DESEDE_ENCRYPTION_SCHEME);
+            secretKey = keyFactory.generateSecret(keySpec);
+            cipher = Cipher.getInstance(DESEDE_ENCRYPTION_SCHEME);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String encrypt(String unencryptedString) throws Exception {
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] plainText = unencryptedString.getBytes(UNICODE_FORMAT);
+        byte[] encryptedText = cipher.doFinal(plainText);
+        return Base64.getEncoder().encodeToString(encryptedText);
+    }
+
+    public static String decrypt(String encryptedString) throws Exception {
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] encryptedText = Base64.getDecoder().decode(encryptedString);
+        byte[] plainText = cipher.doFinal(encryptedText);
+        return new String(plainText, UNICODE_FORMAT);
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Enter the string: ");
+        String stringToEncrypt = br.readLine();
+
+        String encrypted = encrypt(stringToEncrypt);
+        String decrypted = decrypt(encrypted);
+
+        System.out.println("\nString To Encrypt: " + stringToEncrypt);
+        System.out.println("\nEncrypted Value : " + encrypted);
+        System.out.println("\nDecrypted Value : " + decrypted);
+    }
+}
